@@ -14,30 +14,37 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.example.mapper.db2", sqlSessionFactoryRef = "db2SqlSessionFactory")
+@MapperScan(basePackages = "com.example.mapper.test2", sqlSessionFactoryRef = "test2SqlSessionFactory")
 public class DataSource2Config {
 
 
-    @Bean(name = "db2DataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.db2")
-    public DataSource db2DataSource() {
+    @Bean(name = "test2DataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.test2")
+    public DataSource test2DataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "db2SqlSessionFactory")
-    public SqlSessionFactory db2SqlSessionFactory(@Qualifier("db2DataSource") DataSource dataSource) throws Exception {
+    @Bean(name = "test2SqlSessionFactory")
+    public SqlSessionFactory test2SqlSessionFactory(@Qualifier("test2DataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
+
+        bean.setTypeAliasesPackage("com.example.mapper.test2");
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        // 开启驼峰命名规则
+        configuration.setMapUnderscoreToCamelCase(true);
+        bean.setConfiguration(configuration);
+
         return bean.getObject();
     }
 
-    @Bean(name = "db2TransactionManager")
-    public DataSourceTransactionManager db2TransactionManager(@Qualifier("db2DataSource") DataSource dataSource) {
+    @Bean(name = "test2TransactionManager")
+    public DataSourceTransactionManager test2TransactionManager(@Qualifier("test2DataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean(name = "db2SqlSessionTemplate")
-    public SqlSessionTemplate db2SqlSessionTemplate(@Qualifier("db2SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean(name = "test2SqlSessionTemplate")
+    public SqlSessionTemplate test2SqlSessionTemplate(@Qualifier("test2SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

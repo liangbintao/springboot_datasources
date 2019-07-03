@@ -1,4 +1,4 @@
-package com.example.mapper.db2;
+package com.example.mapper.test2;
 
 import com.example.po.UserPo;
 import org.apache.ibatis.annotations.Mapper;

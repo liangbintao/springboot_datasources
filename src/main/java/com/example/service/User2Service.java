@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.mapper.db2.IUser2Mapper;
+import com.example.mapper.test2.IUser2Mapper;
 import com.example.po.UserPo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

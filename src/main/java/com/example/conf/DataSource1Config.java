@@ -10,6 +10,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
@@ -22,34 +23,43 @@ import javax.sql.DataSource;
  * @Version 1.0
  */
 @Configuration
-@MapperScan(basePackages = "com.example.mapper.db1", sqlSessionFactoryRef = "db1SqlSessionFactory")
+@MapperScan(basePackages = "com.example.mapper.test1", sqlSessionFactoryRef = "test1SqlSessionFactory")
 public class DataSource1Config {
 
 
-    @Bean(name = "db1DataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.db1")
+    @Bean(name = "test1DataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.test1")
     @Primary
-    public DataSource db1DataSource() {
+    public DataSource test1DataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "db1SqlSessionFactory")
+    @Bean(name = "test1SqlSessionFactory")
     @Primary
-    public SqlSessionFactory db1SqlSessionFactory(@Qualifier("db1DataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory test1SqlSessionFactory(@Qualifier("test1DataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
+
+        bean.setTypeAliasesPackage("com.example.mapper.test1");
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        // 开启驼峰命名规则
+        configuration.setMapUnderscoreToCamelCase(true);
+        bean.setConfiguration(configuration);
+
+        // bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/test1/*.xml"));
+
         return bean.getObject();
     }
 
-    @Bean(name = "db1TransactionManager")
+    @Bean(name = "test1TransactionManager")
     @Primary
-    public DataSourceTransactionManager db1TransactionManager(@Qualifier("db1DataSource") DataSource dataSource) {
+    public DataSourceTransactionManager test1TransactionManager(@Qualifier("test1DataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean(name = "db1SqlSessionTemplate")
+    @Bean(name = "test1SqlSessionTemplate")
     @Primary
-    public SqlSessionTemplate db1SqlSessionTemplate(@Qualifier("db1SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    public SqlSessionTemplate test1SqlSessionTemplate(@Qualifier("test1SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

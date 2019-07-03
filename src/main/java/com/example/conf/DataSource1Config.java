@@ -46,7 +46,7 @@ public class DataSource1Config {
         configuration.setMapUnderscoreToCamelCase(true);
         bean.setConfiguration(configuration);
 
-        // bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/test1/*.xml"));
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/test1/*.xml"));
 
         return bean.getObject();
     }
